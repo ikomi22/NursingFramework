@@ -1,0 +1,119 @@
+# ================================
+# Python / FastAPI
+# ================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+*.egg-link
+.installed.cfg
+MANIFEST
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.*
+!.env.example
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# mypy / type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# ================================
+# Next.js / Node.js
+# ================================
+node_modules/
+.next/
+out/
+.nuxt/
+.cache/
+.parcel-cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm/
+.yarn/integrity
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Next.js build output
+.vercel/
+.turbo/
+
+# ================================
+# Environment & Secrets
+# ================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.p12
+secrets/
+
+# ================================
+# Databases
+# ================================
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+
+# ================================
+# IDE & Editors
+# ================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ================================
+# Docker
+# ================================
+*.log
+docker-compose.override.yml
+
+# ================================
+# Alembic (DB migrations)
+# ================================
+alembic/versions/__pycache__/
+
+# ================================
+# Misc
+# ================================
+*.bak
+*.tmp
+.temp/
+tmp/

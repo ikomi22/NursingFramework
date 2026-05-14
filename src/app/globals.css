@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --nhs-blue: #005eb8;
+  --nhs-dark-blue: #003087;
+  --nhs-bright-blue: #0072ce;
+  --nhs-light-blue: #41b6e6;
+  --nhs-aqua-green: #00a499;
+  --nhs-black: #212b32;
+  --nhs-dark-grey: #425563;
+  --nhs-mid-grey: #768692;
+  --nhs-pale-grey: #e8edee;
+  --nhs-white: #ffffff;
+  --nhs-green: #007f3b;
+  --nhs-warm-yellow: #ffb81c;
+  --nhs-red: #da291c;
+  --nhs-orange: #fa8c00;
+}
+
+@theme inline {
+  --color-nhs-blue: var(--nhs-blue);
+  --color-nhs-dark-blue: var(--nhs-dark-blue);
+  --color-nhs-bright-blue: var(--nhs-bright-blue);
+  --color-nhs-light-blue: var(--nhs-light-blue);
+  --color-nhs-aqua-green: var(--nhs-aqua-green);
+  --color-nhs-black: var(--nhs-black);
+  --color-nhs-dark-grey: var(--nhs-dark-grey);
+  --color-nhs-mid-grey: var(--nhs-mid-grey);
+  --color-nhs-pale-grey: var(--nhs-pale-grey);
+  --color-nhs-green: var(--nhs-green);
+  --color-nhs-warm-yellow: var(--nhs-warm-yellow);
+  --color-nhs-red: var(--nhs-red);
+  --color-nhs-orange: var(--nhs-orange);
+}
+
+body {
+  background: #f0f4f5;
+  color: var(--nhs-black);
+  font-family: "Frutiger W01", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--nhs-blue);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: var(--nhs-dark-blue);
+  text-decoration: none;
+}

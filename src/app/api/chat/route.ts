@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Message } from "@/types";
+import { buildSystemPrompt } from "@/lib/context";
 
 export async function POST(req: NextRequest) {
   const { messages }: { messages: Message[] } = await req.json();
@@ -14,11 +15,7 @@ export async function POST(req: NextRequest) {
       model: "openai/gpt-oss-120b",
       provider: { order: ["cerebras"] },
       messages: [
-        {
-          role: "system",
-          content:
-            "You are an NHS nursing compliance assistant. Help nursing staff understand competency requirements, compliance obligations, and training needs. Be concise, practical, and accurate. When answering, reference relevant NHS guidelines, bands, and renewal periods where applicable.",
-        },
+        { role: "system", content: buildSystemPrompt() },
         ...messages,
       ],
     }),

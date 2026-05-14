@@ -18,7 +18,7 @@ export default function Header() {
       <nav style={{ backgroundColor: "#003087" }} className="text-white text-sm">
         <div className="max-w-7xl mx-auto px-4 flex gap-0">
           {[
-            { href: "/", label: "Dashboard" },
+            { href: "/", label: "Compliance Chat" },
             { href: "/competencies", label: "Competencies" },
             { href: "/categories", label: "Categories" },
             { href: "/staff", label: "Staff Matrix" },

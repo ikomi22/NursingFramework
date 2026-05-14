@@ -1,11 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import type { Message } from "@/types";
+import { sendChatMessage } from "@/lib/api";
 
 const GREETING = "What compliance topic would you like to know about today?";
 
@@ -15,6 +12,7 @@ export default function ChatPage() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,16 +27,16 @@ export default function ChatPage() {
     setMessages(next);
     setInput("");
     setLoading(true);
+    setError(null);
 
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: next }),
-    });
-    const { content } = await res.json();
-
-    setMessages([...next, { role: "assistant", content }]);
-    setLoading(false);
+    try {
+      const content = await sendChatMessage(next);
+      setMessages([...next, { role: "assistant", content }]);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -75,6 +73,13 @@ export default function ChatPage() {
           <div className="flex justify-start">
             <div className="bg-[#f0f4f5] text-[#768692] rounded px-4 py-3 text-sm">
               Thinking...
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="flex justify-start">
+            <div className="bg-[#fde8e8] text-[#da291c] rounded px-4 py-3 text-sm border border-[#da291c]/20">
+              {error}
             </div>
           </div>
         )}

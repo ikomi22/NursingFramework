@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import type { Message } from "@/types";
 
 export async function POST(req: NextRequest) {
   const { messages }: { messages: Message[] } = await req.json();
@@ -27,6 +23,10 @@ export async function POST(req: NextRequest) {
       ],
     }),
   });
+
+  if (!response.ok) {
+    return NextResponse.json({ error: "Upstream LLM request failed" }, { status: 502 });
+  }
 
   const data = await response.json();
   const content: string = data.choices?.[0]?.message?.content ?? "Sorry, I could not generate a response.";

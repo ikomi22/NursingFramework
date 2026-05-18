@@ -1,10 +1,36 @@
 export default function MandatoryBadge({ mandatory }: { mandatory: boolean }) {
   return mandatory ? (
-    <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded bg-[#005eb8] text-white">
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        fontSize: 11,
+        fontWeight: 700,
+        padding: "2px 8px",
+        borderRadius: 4,
+        background: "#005eb8",
+        color: "white",
+        letterSpacing: "0.03em",
+        textTransform: "uppercase",
+      }}
+    >
       Mandatory
     </span>
   ) : (
-    <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded border border-[#768692] text-[#425563]">
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        fontSize: 11,
+        fontWeight: 600,
+        padding: "2px 8px",
+        borderRadius: 4,
+        background: "#f0f2f4",
+        color: "#768692",
+        letterSpacing: "0.03em",
+        textTransform: "uppercase",
+      }}
+    >
       Optional
     </span>
   );

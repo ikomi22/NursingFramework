@@ -14,11 +14,11 @@ export default function ReportsPage() {
   const notStarted = staffRecords.filter((r) => r.status === "Not Started").length;
   const complianceRate = Math.round((completed / totalRecords) * 100);
 
-  const statusBreakdown: { status: CompetencyStatus; count: number; pct: number }[] = [
-    { status: "Completed", count: completed, pct: Math.round((completed / totalRecords) * 100) },
-    { status: "In Progress", count: inProgress, pct: Math.round((inProgress / totalRecords) * 100) },
-    { status: "Expired", count: expired, pct: Math.round((expired / totalRecords) * 100) },
-    { status: "Not Started", count: notStarted, pct: Math.round((notStarted / totalRecords) * 100) },
+  const statusBreakdown: { status: CompetencyStatus; count: number; pct: number; color: string }[] = [
+    { status: "Completed", count: completed, pct: Math.round((completed / totalRecords) * 100), color: "#007f3b" },
+    { status: "In Progress", count: inProgress, pct: Math.round((inProgress / totalRecords) * 100), color: "#ffb81c" },
+    { status: "Expired", count: expired, pct: Math.round((expired / totalRecords) * 100), color: "#da291c" },
+    { status: "Not Started", count: notStarted, pct: Math.round((notStarted / totalRecords) * 100), color: "#768692" },
   ];
 
   const categoryBreakdown = categories.map((cat) => {
@@ -44,57 +44,83 @@ export default function ReportsPage() {
       expired: wardExpired,
       pct: Math.round((wardCompleted / wardRecords.length) * 100),
     };
-  });
+  }).sort((a, b) => b.pct - a.pct);
+
+  const rateColor = (pct: number) => pct >= 75 ? "#007f3b" : pct >= 50 ? "#fa8c00" : "#da291c";
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#212b32]">Compliance Reports</h1>
-        <p className="text-[#425563] mt-1">Framework-wide compliance and audit readiness overview</p>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#212b32", margin: 0 }}>Compliance Reports</h1>
+        <p style={{ fontSize: 13, color: "#768692", marginTop: 4 }}>
+          Framework-wide compliance and audit readiness overview
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Overall Compliance" value={`${complianceRate}%`} colour="#007f3b" />
-        <StatCard label="Completed Records" value={completed} colour="#007f3b" subtext={`of ${totalRecords} total`} />
-        <StatCard label="Expired Records" value={expired} colour="#da291c" subtext="Require renewal" />
-        <StatCard label="Not Started" value={notStarted} colour="#768692" subtext="No action taken" />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 28 }}>
+        <StatCard
+          label="Overall Compliance"
+          value={`${complianceRate}%`}
+          colour="#007f3b"
+          icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>}
+        />
+        <StatCard
+          label="Completed"
+          value={completed}
+          colour="#007f3b"
+          subtext={`of ${totalRecords} total records`}
+          icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
+        />
+        <StatCard
+          label="Expired"
+          value={expired}
+          colour="#da291c"
+          subtext="Require renewal"
+          icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>}
+        />
+        <StatCard
+          label="Not Started"
+          value={notStarted}
+          colour="#768692"
+          subtext="No action taken"
+          icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
+        />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded shadow-sm p-6">
-          <h2 className="text-base font-bold text-[#212b32] mb-4">Status Breakdown</h2>
-          <div className="space-y-4">
-            {statusBreakdown.map(({ status, count, pct }) => (
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+        <div className="card" style={{ padding: 24 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#212b32", margin: "0 0 20px" }}>Status Breakdown</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {statusBreakdown.map(({ status, count, pct, color }) => (
               <div key={status}>
-                <div className="flex justify-between items-center mb-1">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                   <StatusBadge status={status} />
-                  <span className="text-sm font-semibold text-[#212b32]">{count} ({pct}%)</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#212b32" }}>{count} <span style={{ color: "#768692", fontWeight: 400 }}>({pct}%)</span></span>
                 </div>
-                <div className="h-2 bg-[#e8edee] rounded overflow-hidden">
-                  <div
-                    className="h-full rounded"
-                    style={{
-                      width: `${pct}%`,
-                      backgroundColor: status === "Completed" ? "#007f3b" : status === "Expired" ? "#da291c" : status === "In Progress" ? "#ffb81c" : "#768692",
-                    }}
-                  />
+                <div className="progress-bar">
+                  <div className="progress-bar-fill" style={{ width: `${pct}%`, background: color }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded shadow-sm p-6">
-          <h2 className="text-base font-bold text-[#212b32] mb-4">Compliance by Ward</h2>
-          <div className="space-y-3">
+        <div className="card" style={{ padding: 24 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#212b32", margin: "0 0 20px" }}>Compliance by Ward</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {wardBreakdown.map((w) => (
               <div key={w.ward}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium text-[#212b32]">{w.ward}</span>
-                  <span className="text-[#768692]">{w.pct}% &mdash; {w.expired > 0 && <span className="text-[#da291c]">{w.expired} expired</span>}</span>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                  <span style={{ fontSize: 13, fontWeight: 500, color: "#212b32" }}>{w.ward}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {w.expired > 0 && (
+                      <span style={{ fontSize: 11, color: "#da291c", fontWeight: 600 }}>{w.expired} expired</span>
+                    )}
+                    <span style={{ fontSize: 13, fontWeight: 700, color: rateColor(w.pct) }}>{w.pct}%</span>
+                  </div>
                 </div>
-                <div className="h-2 bg-[#e8edee] rounded overflow-hidden">
-                  <div className="h-full bg-[#005eb8] rounded" style={{ width: `${w.pct}%` }} />
+                <div className="progress-bar">
+                  <div className="progress-bar-fill" style={{ width: `${w.pct}%`, background: rateColor(w.pct) }} />
                 </div>
               </div>
             ))}
@@ -102,56 +128,56 @@ export default function ReportsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded shadow-sm p-6 mb-8">
-        <h2 className="text-base font-bold text-[#212b32] mb-4">Compliance by Category</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b-2 border-[#003087]">
-                <th className="text-left py-2 font-semibold text-[#425563]">Category</th>
-                <th className="text-right py-2 font-semibold text-[#425563]">Records</th>
-                <th className="text-right py-2 font-semibold text-[#425563]">Completed</th>
-                <th className="text-right py-2 font-semibold text-[#425563]">Rate</th>
-                <th className="py-2 pl-4" />
+      <div className="card" style={{ padding: 24, marginBottom: 20 }}>
+        <h2 style={{ fontSize: 15, fontWeight: 700, color: "#212b32", margin: "0 0 16px" }}>Compliance by Category</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ borderBottom: "2px solid #eaecef" }}>
+              <th style={{ textAlign: "left", padding: "8px 12px", fontWeight: 600, color: "#425563", fontSize: 12 }}>Category</th>
+              <th style={{ textAlign: "right", padding: "8px 12px", fontWeight: 600, color: "#425563", fontSize: 12 }}>Records</th>
+              <th style={{ textAlign: "right", padding: "8px 12px", fontWeight: 600, color: "#425563", fontSize: 12 }}>Completed</th>
+              <th style={{ textAlign: "right", padding: "8px 12px", fontWeight: 600, color: "#425563", fontSize: 12 }}>Rate</th>
+              <th style={{ padding: "8px 12px", width: 120 }} />
+            </tr>
+          </thead>
+          <tbody>
+            {categoryBreakdown.sort((a, b) => b.pct - a.pct).map((cat) => (
+              <tr key={cat.name} className="table-row-hover" style={{ borderBottom: "1px solid #eaecef" }}>
+                <td style={{ padding: "11px 12px", fontWeight: 500, color: "#212b32" }}>{cat.name}</td>
+                <td style={{ padding: "11px 12px", textAlign: "right", color: "#768692" }}>{cat.total}</td>
+                <td style={{ padding: "11px 12px", textAlign: "right", color: "#007f3b", fontWeight: 600 }}>{cat.completed}</td>
+                <td style={{ padding: "11px 12px", textAlign: "right", fontWeight: 700, color: rateColor(cat.pct) }}>{cat.pct}%</td>
+                <td style={{ padding: "11px 12px" }}>
+                  <div className="progress-bar">
+                    <div className="progress-bar-fill" style={{ width: `${cat.pct}%`, background: rateColor(cat.pct) }} />
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {categoryBreakdown.map((cat) => (
-                <tr key={cat.name} className="border-b border-[#e8edee] hover:bg-[#f0f4f5]">
-                  <td className="py-3 font-medium text-[#212b32]">{cat.name}</td>
-                  <td className="py-3 text-right text-[#425563]">{cat.total}</td>
-                  <td className="py-3 text-right text-[#007f3b] font-semibold">{cat.completed}</td>
-                  <td className="py-3 text-right font-bold" style={{ color: cat.pct >= 75 ? "#007f3b" : cat.pct >= 50 ? "#fa8c00" : "#da291c" }}>
-                    {cat.pct}%
-                  </td>
-                  <td className="py-3 pl-4 w-32">
-                    <div className="h-2 bg-[#e8edee] rounded overflow-hidden">
-                      <div
-                        className="h-full rounded"
-                        style={{
-                          width: `${cat.pct}%`,
-                          backgroundColor: cat.pct >= 75 ? "#007f3b" : cat.pct >= 50 ? "#fa8c00" : "#da291c",
-                        }}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      <div className="bg-white rounded shadow-sm p-6">
-        <h2 className="text-base font-bold text-[#212b32] mb-4">Role Competency Requirements</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="card" style={{ padding: 24 }}>
+        <h2 style={{ fontSize: 15, fontWeight: 700, color: "#212b32", margin: "0 0 16px" }}>Role Competency Requirements</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
           {roleMappings.map((role) => (
-            <div key={role.role} className="border border-[#e8edee] rounded p-4">
-              <div className="font-semibold text-[#212b32] text-sm">{role.role}</div>
-              <div className="text-xs text-[#768692] mt-0.5">{role.bands}</div>
-              <div className="text-xs text-[#425563] mt-2">{role.description}</div>
-              <div className="mt-3 text-lg font-bold text-[#005eb8]">{role.mandatoryCount}</div>
-              <div className="text-xs text-[#768692]">mandatory competencies</div>
+            <div
+              key={role.role}
+              style={{
+                border: "1px solid #eaecef",
+                borderRadius: 8,
+                padding: "16px",
+                background: "#fafbfc",
+              }}
+            >
+              <div style={{ fontWeight: 700, fontSize: 13, color: "#212b32" }}>{role.role}</div>
+              <div style={{ fontSize: 11, color: "#768692", marginTop: 2 }}>{role.bands}</div>
+              <div style={{ fontSize: 12, color: "#425563", marginTop: 8, lineHeight: 1.5 }}>{role.description}</div>
+              <div style={{ marginTop: 12, display: "flex", alignItems: "baseline", gap: 4 }}>
+                <span style={{ fontSize: 24, fontWeight: 700, color: "#005eb8" }}>{role.mandatoryCount}</span>
+                <span style={{ fontSize: 12, color: "#768692" }}>mandatory competencies</span>
+              </div>
             </div>
           ))}
         </div>

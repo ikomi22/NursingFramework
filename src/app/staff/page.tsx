@@ -8,66 +8,124 @@ export default function StaffPage() {
   const totalRecords = staffRecords.length;
   const expired = staffRecords.filter((r) => r.status === "Expired").length;
   const notStarted = staffRecords.filter((r) => r.status === "Not Started").length;
+  const completed = staffRecords.filter((r) => r.status === "Completed").length;
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#212b32]">Staff Competency Matrix</h1>
-        <p className="text-[#425563] mt-1">Competency status for {summaries.length} tracked staff members</p>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#212b32", margin: 0 }}>Staff Competency Matrix</h1>
+        <p style={{ fontSize: 13, color: "#768692", marginTop: 4 }}>
+          Competency status for {summaries.length} tracked staff members
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Staff Members" value={summaries.length} colour="#005eb8" />
-        <StatCard label="Total Records" value={totalRecords} colour="#003087" />
-        <StatCard label="Expired Records" value={expired} colour="#da291c" subtext="Require renewal" />
-        <StatCard label="Not Started" value={notStarted} colour="#768692" subtext="Awaiting completion" />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 28 }}>
+        <StatCard
+          label="Staff Members"
+          value={summaries.length}
+          colour="#005eb8"
+          icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
+        />
+        <StatCard
+          label="Completed Records"
+          value={completed}
+          colour="#007f3b"
+          subtext={`of ${totalRecords} total`}
+          icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
+        />
+        <StatCard
+          label="Expired Records"
+          value={expired}
+          colour="#da291c"
+          subtext="Require renewal"
+          icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>}
+        />
+        <StatCard
+          label="Not Started"
+          value={notStarted}
+          colour="#768692"
+          subtext="Awaiting completion"
+          icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
+        />
       </div>
 
-      <div className="space-y-6">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {summaries.map((staff) => {
           const records = staffRecords.filter((r) => r.staffId === staff.staffId);
           const pct = Math.round((staff.completed / staff.total) * 100);
+          const pctColor = pct >= 80 ? "#007f3b" : pct >= 50 ? "#fa8c00" : "#da291c";
+
           return (
-            <div key={staff.staffId} className="bg-white rounded shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-[#e8edee] flex items-center justify-between flex-wrap gap-3">
-                <div>
-                  <h2 className="text-base font-bold text-[#212b32]">{staff.staffName}</h2>
-                  <p className="text-sm text-[#768692]">{staff.role} &mdash; {staff.ward}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-[#007f3b]">{pct}%</div>
-                    <div className="text-xs text-[#768692]">completion</div>
+            <div key={staff.staffId} className="card" style={{ overflow: "hidden" }}>
+              <div
+                style={{
+                  padding: "16px 20px",
+                  borderBottom: "1px solid #eaecef",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: 12,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      background: "#f0f4fb",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      fontSize: 14,
+                      color: "#005eb8",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {staff.staffName.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                   </div>
-                  <div className="w-24">
-                    <div className="h-2 bg-[#e8edee] rounded overflow-hidden">
-                      <div className="h-full bg-[#007f3b] rounded" style={{ width: `${pct}%` }} />
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: "#212b32" }}>{staff.staffName}</div>
+                    <div style={{ fontSize: 12, color: "#768692" }}>{staff.role} &mdash; {staff.ward}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: pctColor, lineHeight: 1 }}>{pct}%</div>
+                    <div style={{ fontSize: 11, color: "#768692", marginTop: 2 }}>
+                      {staff.completed}/{staff.total} completed
                     </div>
-                    <div className="text-xs text-[#768692] mt-0.5 text-right">{staff.completed}/{staff.total}</div>
+                  </div>
+                  <div style={{ width: 80 }}>
+                    <div className="progress-bar">
+                      <div className="progress-bar-fill" style={{ width: `${pct}%`, background: pctColor }} />
+                    </div>
                   </div>
                 </div>
               </div>
-              <table className="w-full text-sm">
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
-                  <tr className="bg-[#f0f4f5]">
-                    <th className="px-4 py-2 text-left font-semibold text-[#425563]">Competency</th>
-                    <th className="px-4 py-2 text-left font-semibold text-[#425563]">Status</th>
-                    <th className="px-4 py-2 text-left font-semibold text-[#425563]">Completed</th>
-                    <th className="px-4 py-2 text-left font-semibold text-[#425563]">Expires</th>
+                  <tr style={{ background: "#fafbfc", borderBottom: "1px solid #eaecef" }}>
+                    <th style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Competency</th>
+                    <th style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Status</th>
+                    <th style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Completed</th>
+                    <th style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Expires</th>
                   </tr>
                 </thead>
                 <tbody>
                   {records.map((r, i) => {
                     const comp = getCompetencyById(r.competencyId);
                     return (
-                      <tr key={i} className="border-b border-[#e8edee] hover:bg-[#f9fbfc]">
-                        <td className="px-4 py-2.5">
-                          <div className="font-medium text-[#212b32]">{comp?.name ?? r.competencyId}</div>
-                          <div className="text-xs text-[#768692]">{r.competencyId}</div>
+                      <tr key={i} className="table-row-hover" style={{ borderBottom: "1px solid #eaecef" }}>
+                        <td style={{ padding: "10px 16px" }}>
+                          <div style={{ fontWeight: 500, color: "#212b32" }}>{comp?.name ?? r.competencyId}</div>
+                          <div style={{ fontSize: 11, color: "#768692", fontFamily: "monospace" }}>{r.competencyId}</div>
                         </td>
-                        <td className="px-4 py-2.5"><StatusBadge status={r.status} /></td>
-                        <td className="px-4 py-2.5 text-[#425563]">{r.completionDate ?? "—"}</td>
-                        <td className="px-4 py-2.5 text-[#425563]">{r.expiryDate ?? "—"}</td>
+                        <td style={{ padding: "10px 16px" }}><StatusBadge status={r.status} /></td>
+                        <td style={{ padding: "10px 16px", color: "#425563", fontSize: 12 }}>{r.completionDate ?? "—"}</td>
+                        <td style={{ padding: "10px 16px", color: r.expiryDate ? "#212b32" : "#768692", fontSize: 12 }}>{r.expiryDate ?? "—"}</td>
                       </tr>
                     );
                   })}

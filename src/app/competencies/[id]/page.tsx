@@ -16,94 +16,113 @@ export default async function CompetencyDetailPage({ params }: { params: Promise
   if (!competency) notFound();
 
   const records = staffRecords.filter((r) => r.competencyId === id);
+  const statusCounts = (["Completed", "In Progress", "Expired", "Not Started"] as CompetencyStatus[]).map((status) => ({
+    status,
+    count: records.filter((r) => r.status === status).length,
+  }));
+  const completedCount = records.filter((r) => r.status === "Completed").length;
+  const compliancePct = records.length > 0 ? Math.round((completedCount / records.length) * 100) : 0;
 
   return (
     <div>
-      <nav className="text-sm text-[#768692] mb-4">
-        <Link href="/competencies" className="text-[#005eb8]">Competencies</Link>
-        <span className="mx-2">/</span>
-        <span>{competency.name}</span>
+      <nav style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#768692", marginBottom: 20 }}>
+        <Link href="/competencies" style={{ color: "#005eb8" }}>Competencies</Link>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+        <span style={{ color: "#212b32" }}>{competency.name}</span>
       </nav>
 
-      <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
         <div>
-          <span className="text-xs font-mono text-[#768692] block mb-1">{competency.id}</span>
-          <h1 className="text-3xl font-bold text-[#212b32]">{competency.name}</h1>
-          <p className="text-[#425563] mt-1">{competency.category}</p>
+          <span style={{ fontSize: 11, fontFamily: "monospace", color: "#768692", display: "block", marginBottom: 4 }}>{competency.id}</span>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: "#212b32", margin: 0 }}>{competency.name}</h1>
+          <p style={{ fontSize: 13, color: "#768692", marginTop: 6 }}>{competency.category}</p>
         </div>
         <MandatoryBadge mandatory={competency.mandatory} />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
-        <div className="md:col-span-2 bg-white rounded shadow-sm p-6">
-          <h2 className="text-base font-bold text-[#212b32] mb-3">Description</h2>
-          <p className="text-[#425563]">{competency.description}</p>
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20, marginBottom: 24 }}>
+        <div className="card" style={{ padding: 24 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#212b32", margin: "0 0 12px" }}>Description</h2>
+          <p style={{ color: "#425563", lineHeight: 1.7, margin: 0 }}>{competency.description}</p>
 
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <div>
-              <div className="text-xs font-semibold text-[#768692] uppercase tracking-wide mb-1">Assessment Method</div>
-              <div className="text-sm text-[#212b32] font-medium">{competency.assessmentMethod}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-[#768692] uppercase tracking-wide mb-1">Renewal Period</div>
-              <div className="text-sm text-[#212b32] font-medium">{competency.renewalPeriod}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-[#768692] uppercase tracking-wide mb-1">Applicable Band</div>
-              <div className="text-sm text-[#212b32] font-medium">{competency.band}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-[#768692] uppercase tracking-wide mb-1">Category</div>
-              <div className="text-sm text-[#212b32] font-medium">{competency.category}</div>
-            </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 24 }}>
+            {[
+              { label: "Assessment Method", value: competency.assessmentMethod },
+              { label: "Renewal Period", value: competency.renewalPeriod },
+              { label: "Applicable Band", value: competency.band },
+              { label: "Category", value: competency.category },
+            ].map(({ label, value }) => (
+              <div key={label}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#768692", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+                  {label}
+                </div>
+                <div style={{ fontSize: 14, color: "#212b32", fontWeight: 500 }}>{value}</div>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="bg-white rounded shadow-sm p-6">
-          <h2 className="text-base font-bold text-[#212b32] mb-3">Compliance Summary</h2>
+        <div className="card" style={{ padding: 24 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#212b32", margin: "0 0 4px" }}>Compliance Summary</h2>
           {records.length === 0 ? (
-            <p className="text-sm text-[#768692]">No staff records for this competency.</p>
+            <p style={{ fontSize: 13, color: "#768692", marginTop: 12 }}>No staff records for this competency.</p>
           ) : (
-            <div className="space-y-2">
-              {(["Completed", "In Progress", "Expired", "Not Started"] as CompetencyStatus[]).map((status) => {
-                const count = records.filter((r) => r.status === status).length;
-                return (
-                  <div key={status} className="flex justify-between items-center text-sm">
+            <>
+              <div style={{ textAlign: "center", padding: "16px 0" }}>
+                <div style={{ fontSize: 36, fontWeight: 700, color: compliancePct >= 75 ? "#007f3b" : compliancePct >= 50 ? "#fa8c00" : "#da291c" }}>
+                  {compliancePct}%
+                </div>
+                <div style={{ fontSize: 12, color: "#768692" }}>compliance rate</div>
+                <div className="progress-bar" style={{ marginTop: 10 }}>
+                  <div
+                    className="progress-bar-fill"
+                    style={{
+                      width: `${compliancePct}%`,
+                      background: compliancePct >= 75 ? "#007f3b" : compliancePct >= 50 ? "#fa8c00" : "#da291c",
+                    }}
+                  />
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
+                {statusCounts.map(({ status, count }) => (
+                  <div key={status} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <StatusBadge status={status} />
-                    <span className="font-semibold text-[#212b32]">{count}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#212b32" }}>{count}</span>
                   </div>
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
 
       {records.length > 0 && (
-        <div className="bg-white rounded shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#e8edee]">
-            <h2 className="text-base font-bold text-[#212b32]">Staff Records</h2>
+        <div className="card" style={{ overflow: "hidden" }}>
+          <div style={{ padding: "16px 20px", borderBottom: "1px solid #eaecef" }}>
+            <h2 style={{ fontSize: 15, fontWeight: 700, color: "#212b32", margin: 0 }}>Staff Records</h2>
           </div>
-          <table className="w-full text-sm">
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
-              <tr className="bg-[#f0f4f5] text-left">
-                <th className="px-4 py-3 font-semibold text-[#425563]">Staff</th>
-                <th className="px-4 py-3 font-semibold text-[#425563]">Role</th>
-                <th className="px-4 py-3 font-semibold text-[#425563]">Ward</th>
-                <th className="px-4 py-3 font-semibold text-[#425563]">Status</th>
-                <th className="px-4 py-3 font-semibold text-[#425563]">Completed</th>
-                <th className="px-4 py-3 font-semibold text-[#425563]">Expires</th>
+              <tr style={{ background: "#fafbfc", borderBottom: "1px solid #eaecef" }}>
+                <th style={{ padding: "10px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Staff</th>
+                <th style={{ padding: "10px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Role</th>
+                <th style={{ padding: "10px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Ward</th>
+                <th style={{ padding: "10px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Status</th>
+                <th style={{ padding: "10px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Completed</th>
+                <th style={{ padding: "10px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Expires</th>
               </tr>
             </thead>
             <tbody>
               {records.map((r, i) => (
-                <tr key={`${r.staffId}-${i}`} className="border-b border-[#e8edee] hover:bg-[#f9fbfc]">
-                  <td className="px-4 py-3 font-medium text-[#212b32]">{r.staffName}</td>
-                  <td className="px-4 py-3 text-[#425563]">{r.role}</td>
-                  <td className="px-4 py-3 text-[#425563]">{r.ward}</td>
-                  <td className="px-4 py-3"><StatusBadge status={r.status} /></td>
-                  <td className="px-4 py-3 text-[#425563]">{r.completionDate ?? "—"}</td>
-                  <td className="px-4 py-3 text-[#425563]">{r.expiryDate ?? "—"}</td>
+                <tr key={`${r.staffId}-${i}`} className="table-row-hover" style={{ borderBottom: "1px solid #eaecef" }}>
+                  <td style={{ padding: "10px 16px", fontWeight: 500, color: "#212b32" }}>{r.staffName}</td>
+                  <td style={{ padding: "10px 16px", color: "#425563" }}>{r.role}</td>
+                  <td style={{ padding: "10px 16px", color: "#425563" }}>{r.ward}</td>
+                  <td style={{ padding: "10px 16px" }}><StatusBadge status={r.status} /></td>
+                  <td style={{ padding: "10px 16px", color: "#425563" }}>{r.completionDate ?? "—"}</td>
+                  <td style={{ padding: "10px 16px", color: r.status === "Expired" ? "#da291c" : "#425563" }}>{r.expiryDate ?? "—"}</td>
                 </tr>
               ))}
             </tbody>

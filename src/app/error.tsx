@@ -14,15 +14,25 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-[400px] flex items-center justify-center">
-      <div className="text-center max-w-md">
-        <h2 className="text-xl font-bold text-[#212b32] mb-2">Something went wrong</h2>
-        <p className="text-sm text-[#425563] mb-4">
+    <div style={{ minHeight: 400, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ textAlign: "center", maxWidth: 400 }}>
+        <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: "#212b32", marginBottom: 8 }}>Something went wrong</h2>
+        <p style={{ fontSize: 13, color: "#425563", marginBottom: 20 }}>
           An unexpected error occurred. Please try again.
         </p>
         <button
           onClick={reset}
-          className="bg-[#005eb8] text-white font-semibold text-sm px-5 py-2 rounded hover:bg-[#003087] transition-colors"
+          style={{
+            background: "#005eb8",
+            color: "white",
+            border: "none",
+            borderRadius: 6,
+            padding: "10px 24px",
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
         >
           Try again
         </button>

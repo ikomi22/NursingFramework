@@ -5,10 +5,22 @@ import Link from "next/link";
 import { competencies, categories } from "@/data/competencies";
 import MandatoryBadge from "@/components/MandatoryBadge";
 
-const renewalColours: Record<string, string> = {
-  Annual: "text-[#212b32]",
-  "Every 2 Years": "text-[#425563]",
-  "Every 3 Years": "text-[#768692]",
+const categoryColors: Record<string, string> = {
+  "Clinical Skills": "#005eb8",
+  "Patient Safety": "#da291c",
+  "Medicines Management": "#7c2d8e",
+  "Infection Prevention & Control": "#00a499",
+  "Communication": "#fa8c00",
+  "Digital & Documentation": "#003087",
+  "Emergency Response": "#e85c00",
+  "Safeguarding": "#b88600",
+  "Leadership & Professional Practice": "#007f3b",
+};
+
+const renewalColors: Record<string, string> = {
+  Annual: "#da291c",
+  "Every 2 Years": "#fa8c00",
+  "Every 3 Years": "#007f3b",
 };
 
 export default function CompetenciesPage() {
@@ -31,84 +43,153 @@ export default function CompetenciesPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#212b32]">Competencies</h1>
-        <p className="text-[#425563] mt-1">
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#212b32", margin: 0 }}>Competencies</h1>
+        <p style={{ fontSize: 13, color: "#768692", marginTop: 4 }}>
           {competencies.length} competencies across {categories.length} categories
         </p>
       </div>
 
-      <div className="bg-white rounded shadow-sm p-4 mb-6 flex flex-wrap gap-4 items-end">
-        <div className="flex-1 min-w-48">
-          <label className="block text-sm font-semibold text-[#212b32] mb-1">Search</label>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, ID or description..."
-            className="w-full border border-[#768692] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#005eb8]"
-          />
+      <div className="card" style={{ padding: 16, marginBottom: 20, display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
+        <div style={{ flex: "1 1 240px" }}>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425563", marginBottom: 6 }}>Search</label>
+          <div style={{ position: "relative" }}>
+            <svg
+              width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#768692" strokeWidth="2"
+              style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}
+            >
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Name, ID or description…"
+              style={{
+                width: "100%",
+                border: "1px solid #dde2e8",
+                borderRadius: 6,
+                padding: "8px 12px 8px 32px",
+                fontSize: 13,
+                color: "#212b32",
+                outline: "none",
+                background: "#fafbfc",
+              }}
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-semibold text-[#212b32] mb-1">Category</label>
+        <div style={{ flex: "0 1 auto" }}>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425563", marginBottom: 6 }}>Category</label>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="border border-[#768692] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#005eb8]"
+            style={{
+              border: "1px solid #dde2e8",
+              borderRadius: 6,
+              padding: "8px 32px 8px 12px",
+              fontSize: 13,
+              color: "#212b32",
+              outline: "none",
+              background: "#fafbfc",
+              appearance: "none",
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23768692' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 10px center",
+            }}
           >
             <option>All</option>
             {categories.map((c) => <option key={c}>{c}</option>)}
           </select>
         </div>
-        <div>
-          <label className="block text-sm font-semibold text-[#212b32] mb-1">Type</label>
+        <div style={{ flex: "0 1 auto" }}>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425563", marginBottom: 6 }}>Type</label>
           <select
             value={mandatoryFilter}
             onChange={(e) => setMandatoryFilter(e.target.value)}
-            className="border border-[#768692] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#005eb8]"
+            style={{
+              border: "1px solid #dde2e8",
+              borderRadius: 6,
+              padding: "8px 32px 8px 12px",
+              fontSize: 13,
+              color: "#212b32",
+              outline: "none",
+              background: "#fafbfc",
+              appearance: "none",
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23768692' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 10px center",
+            }}
           >
             <option>All</option>
             <option>Mandatory</option>
             <option>Optional</option>
           </select>
         </div>
-        <div className="text-sm text-[#768692]">
-          Showing <strong className="text-[#212b32]">{filtered.length}</strong> of {competencies.length}
+        <div style={{ fontSize: 12, color: "#768692", marginLeft: "auto" }}>
+          <strong style={{ color: "#212b32" }}>{filtered.length}</strong> of {competencies.length} shown
         </div>
       </div>
 
-      <div className="bg-white rounded shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="card" style={{ overflow: "hidden" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
-            <tr className="bg-[#003087] text-white text-left">
-              <th className="px-4 py-3 font-semibold">ID</th>
-              <th className="px-4 py-3 font-semibold">Competency</th>
-              <th className="px-4 py-3 font-semibold">Category</th>
-              <th className="px-4 py-3 font-semibold">Band</th>
-              <th className="px-4 py-3 font-semibold">Assessment</th>
-              <th className="px-4 py-3 font-semibold">Renewal</th>
-              <th className="px-4 py-3 font-semibold">Type</th>
+            <tr style={{ background: "#f4f6f9", borderBottom: "2px solid #eaecef" }}>
+              <th style={{ padding: "11px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>ID</th>
+              <th style={{ padding: "11px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Competency</th>
+              <th style={{ padding: "11px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Category</th>
+              <th style={{ padding: "11px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Band</th>
+              <th style={{ padding: "11px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Renewal</th>
+              <th style={{ padding: "11px 16px", textAlign: "left", fontWeight: 600, color: "#425563", fontSize: 12 }}>Type</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((c, i) => (
-              <tr key={c.id} className={`border-b border-[#e8edee] hover:bg-[#f0f4f5] ${i % 2 === 0 ? "bg-white" : "bg-[#f9fbfc]"}`}>
-                <td className="px-4 py-3 font-mono text-xs text-[#768692]">{c.id}</td>
-                <td className="px-4 py-3">
-                  <Link href={`/competencies/${c.id}`} className="font-semibold text-[#005eb8]">
+            {filtered.map((c) => (
+              <tr
+                key={c.id}
+                className="table-row-hover"
+                style={{ borderBottom: "1px solid #eaecef" }}
+              >
+                <td style={{ padding: "11px 16px", fontFamily: "monospace", fontSize: 11, color: "#768692" }}>{c.id}</td>
+                <td style={{ padding: "11px 16px" }}>
+                  <Link
+                    href={`/competencies/${c.id}`}
+                    style={{ fontWeight: 600, color: "#005eb8", fontSize: 13 }}
+                  >
                     {c.name}
                   </Link>
+                  <div style={{ fontSize: 11, color: "#768692", marginTop: 2 }}>{c.assessmentMethod}</div>
                 </td>
-                <td className="px-4 py-3 text-[#425563]">{c.category}</td>
-                <td className="px-4 py-3 text-[#425563] whitespace-nowrap">{c.band}</td>
-                <td className="px-4 py-3 text-[#425563]">{c.assessmentMethod}</td>
-                <td className={`px-4 py-3 ${renewalColours[c.renewalPeriod]}`}>{c.renewalPeriod}</td>
-                <td className="px-4 py-3"><MandatoryBadge mandatory={c.mandatory} /></td>
+                <td style={{ padding: "11px 16px" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      padding: "2px 8px",
+                      borderRadius: 4,
+                      background: `${categoryColors[c.category] ?? "#005eb8"}18`,
+                      color: categoryColors[c.category] ?? "#005eb8",
+                    }}
+                  >
+                    {c.category}
+                  </span>
+                </td>
+                <td style={{ padding: "11px 16px", color: "#425563", fontSize: 12, whiteSpace: "nowrap" }}>{c.band}</td>
+                <td style={{ padding: "11px 16px" }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: renewalColors[c.renewalPeriod] ?? "#212b32" }}>
+                    {c.renewalPeriod}
+                  </span>
+                </td>
+                <td style={{ padding: "11px 16px" }}>
+                  <MandatoryBadge mandatory={c.mandatory} />
+                </td>
               </tr>
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-[#768692]">No competencies match your filters.</td>
+                <td colSpan={6} style={{ padding: "40px 16px", textAlign: "center", color: "#768692" }}>
+                  No competencies match your filters.
+                </td>
               </tr>
             )}
           </tbody>

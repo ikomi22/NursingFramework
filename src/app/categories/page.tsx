@@ -1,16 +1,28 @@
 import Link from "next/link";
 import { competencies, categories } from "@/data/competencies";
 
-const categoryColours: Record<string, string> = {
+const categoryColors: Record<string, string> = {
   "Clinical Skills": "#005eb8",
   "Patient Safety": "#da291c",
   "Medicines Management": "#7c2d8e",
   "Infection Prevention & Control": "#00a499",
   "Communication": "#fa8c00",
   "Digital & Documentation": "#003087",
-  "Emergency Response": "#da291c",
-  "Safeguarding": "#ffb81c",
+  "Emergency Response": "#e85c00",
+  "Safeguarding": "#b88600",
   "Leadership & Professional Practice": "#007f3b",
+};
+
+const categoryIcons: Record<string, string> = {
+  "Clinical Skills": "🩺",
+  "Patient Safety": "🛡️",
+  "Medicines Management": "💊",
+  "Infection Prevention & Control": "🧤",
+  "Communication": "💬",
+  "Digital & Documentation": "💻",
+  "Emergency Response": "🚨",
+  "Safeguarding": "⚖️",
+  "Leadership & Professional Practice": "👥",
 };
 
 export default function CategoriesPage() {
@@ -20,45 +32,112 @@ export default function CategoriesPage() {
       name: cat,
       count: comps.length,
       mandatory: comps.filter((c) => c.mandatory).length,
-      colour: categoryColours[cat] ?? "#005eb8",
+      optional: comps.filter((c) => !c.mandatory).length,
+      colour: categoryColors[cat] ?? "#005eb8",
+      icon: categoryIcons[cat] ?? "📋",
       examples: comps.slice(0, 3).map((c) => c.name),
     };
   });
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#212b32]">Competency Categories</h1>
-        <p className="text-[#425563] mt-1">{categories.length} categories covering the full nursing competency framework</p>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#212b32", margin: 0 }}>Competency Categories</h1>
+        <p style={{ fontSize: 13, color: "#768692", marginTop: 4 }}>
+          {categories.length} categories covering the full nursing competency framework
+        </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
         {categoryData.map((cat) => (
-          <div key={cat.name} className="bg-white rounded shadow-sm overflow-hidden">
-            <div className="h-2" style={{ backgroundColor: cat.colour }} />
-            <div className="p-5">
-              <h2 className="text-base font-bold text-[#212b32] mb-1">{cat.name}</h2>
-              <div className="flex gap-4 text-sm text-[#768692] mb-4">
-                <span><strong className="text-[#212b32]">{cat.count}</strong> competencies</span>
-                <span><strong className="text-[#212b32]">{cat.mandatory}</strong> mandatory</span>
+          <div
+            key={cat.name}
+            className="card card-hover"
+            style={{ overflow: "hidden" }}
+          >
+            <div style={{ height: 4, background: cat.colour }} />
+            <div style={{ padding: "20px 20px 16px" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 14 }}>
+                <div
+                  style={{
+                    width: 42,
+                    height: 42,
+                    borderRadius: 10,
+                    background: `${cat.colour}15`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 20,
+                    flexShrink: 0,
+                  }}
+                >
+                  {cat.icon}
+                </div>
+                <div>
+                  <h2 style={{ fontSize: 14, fontWeight: 700, color: "#212b32", margin: 0, lineHeight: 1.3 }}>{cat.name}</h2>
+                  <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
+                    <span style={{ fontSize: 12, color: "#768692" }}>
+                      <strong style={{ color: "#212b32" }}>{cat.count}</strong> total
+                    </span>
+                    <span style={{ fontSize: 12, color: "#768692" }}>
+                      <strong style={{ color: "#005eb8" }}>{cat.mandatory}</strong> mandatory
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-1 mb-4">
+
+              <div style={{ marginBottom: 16 }}>
                 {cat.examples.map((ex) => (
-                  <div key={ex} className="text-xs text-[#425563] flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: cat.colour }} />
+                  <div
+                    key={ex}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "4px 0",
+                      fontSize: 12,
+                      color: "#425563",
+                      borderBottom: "1px solid #f0f2f4",
+                    }}
+                  >
+                    <span style={{ width: 5, height: 5, borderRadius: "50%", background: cat.colour, flexShrink: 0 }} />
                     {ex}
                   </div>
                 ))}
                 {cat.count > 3 && (
-                  <div className="text-xs text-[#768692]">+{cat.count - 3} more&hellip;</div>
+                  <div style={{ fontSize: 11, color: "#768692", marginTop: 6 }}>+{cat.count - 3} more competencies</div>
                 )}
               </div>
+
+              <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+                <div style={{ flex: 1, height: 4, borderRadius: 2, background: "#eaecef", overflow: "hidden" }}>
+                  <div
+                    style={{
+                      height: "100%",
+                      borderRadius: 2,
+                      background: cat.colour,
+                      width: `${Math.round((cat.mandatory / cat.count) * 100)}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
               <Link
                 href={`/competencies?category=${encodeURIComponent(cat.name)}`}
-                className="text-sm font-semibold no-underline"
-                style={{ color: cat.colour, textDecoration: "none" }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: cat.colour,
+                  textDecoration: "none",
+                }}
               >
-                View all {cat.name} competencies &rarr;
+                View all competencies
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
               </Link>
             </div>
           </div>
